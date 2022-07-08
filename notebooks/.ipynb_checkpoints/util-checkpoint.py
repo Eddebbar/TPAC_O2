@@ -23,13 +23,13 @@ from dask.distributed import Client
 path_to_here = os.path.dirname(os.path.realpath(__file__))
 
 
-def get_ClusterClient(memory="25GB", project="NCGD0011", on_hub=True):
+def get_ClusterClient(memory="50GB", project="USIO0030", on_hub=True):
     cluster = get_Cluster(memory, project, on_hub)
     client = Client(cluster)
     return cluster, client
 
 
-def get_Cluster(memory="25GB", project="NCGD0011", on_hub=True):
+def get_Cluster(memory="50GB", project="USIO0030", on_hub=True):
     """return client and cluster"""
     USER = os.environ["USER"]
 
@@ -42,7 +42,7 @@ def get_Cluster(memory="25GB", project="NCGD0011", on_hub=True):
         log_directory=f"/glade/scratch/{USER}/dask-workers",
         resource_spec=f"select=1:ncpus=1:mem={memory}",
         project=project,
-        walltime="06:00:00",
+        walltime="00:15:00",
         interface="ib0",
     )
 

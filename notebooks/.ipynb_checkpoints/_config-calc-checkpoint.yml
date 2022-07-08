@@ -1,8 +1,8 @@
 ###
 # computation config keys
 output_dir: ./_computed-notebooks
-default_kernel_name: cesm-exp
-project: NCGD0011
+default_kernel_name: TPAC_O2
+project: USIO0030
 
 
 ###
@@ -17,21 +17,19 @@ book_toc:
   format: jb-book
   root: description
   parts:
-    - caption: Ocean Carbon Cycle
+    - caption: Tracer snapshot
       chapters:
-        - file: ocn-fgco2
-    - caption: Ocean Tracers
+        - file: tracer_snapshot
+    - caption: Tracer mean
       chapters:
-        - file: intro-ocn-tracer-views
-          sections:
-            - glob: ocn-tracer-views*
+        - file: tracer_mean
 
 ###
 # book _config.yml keys
 book_config_keys:
-  title: My CESM Experiment
+  title: Tropical Pacific Oxygen Dynamics at the Mesoscale
   repository:
-    url: https://github.com/matt-long/my-cesm-experiment
+    url: https://github.com/Eddebbar/TPAC_O2
     path_to_book: notebooks
     branch: main
 
@@ -44,18 +42,10 @@ compute_notebooks:
     parameter_groups:
       none:
         casename: *casename
-  
-  ocn-fgco2:
+
+  tracer_snapshot:
     use_cluster: True
-    parameter_groups:  
-      none:
-        casename: *casename
-        component: pop
-        stream: h
-  
-  ocn-tracer-views:
-    use_cluster: True
-    kernel_name: cesm-exp
+    kernel_name: TROP_O2
     default_params:
       casename: *casename
       component: pop
@@ -63,7 +53,18 @@ compute_notebooks:
     parameter_groups:
       temperature:
         variable_id: TEMP
-      salinity:
-        variable_id: SALT
+      oxygen:
+        variable_id: O2
+
+  tracer_mean:
+    use_cluster: True
+    kernel_name: TROP_O2
+    default_params:
+      casename: *casename
+      component: pop
+      stream: h
+    parameter_groups:
+      temperature:
+        variable_id: TEMP
       oxygen:
         variable_id: O2

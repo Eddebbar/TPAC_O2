@@ -33,18 +33,12 @@ def _preprocess_pop(ds):
     return ds.set_coords(["KMT", "TAREA"])
     
 
-def _get_assets(case, component, stream, archive_root):
+def _get_assets(case, component, stream, freq, variable_id,years,archive_root,):
     """
     list file assets assuming short term archiver has run
     """
     
-    try:
-        system = component_system[component]
-    except KeyError:
-        print(f'missing system definition for {component}')
-        raise
-        
-    glob_expression = f'{archive_root}/{case}/{system}/hist/{case}.{component}.{stream}.*.nc'
+    glob_expression = f'{archive_root}/{freq}/{case}.{component}.{stream}.{variable_id}.{years}.nc'
     assets = sorted(glob(glob_expression))
     
     assert assets, f'no files found.\nsearched using: {glob_expression}'
@@ -52,10 +46,11 @@ def _get_assets(case, component, stream, archive_root):
     return assets
 
 
-def to_dataset_dict(case, component, stream, archive_root=None, cdf_kwargs={}):
+def to_dataset_dict(case, component, stream, freq, variable_id, years, archive_root=None,  cdf_kwargs={}):
     
     if archive_root is None:
-        archive_root = f'/glade/scratch/{USER}/archive'
+        archive_root = f'/glade/campaign/cesm/development/bgcwg/projects/hi-res_JRA/cases/g.e22.G1850ECO_JRA_HR.TL319_t13.004/output/ocn/proc/tseries/'
+        
     assert os.path.exists(archive_root)
     
     if isinstance(case, str):
@@ -66,8 +61,16 @@ def to_dataset_dict(case, component, stream, archive_root=None, cdf_kwargs={}):
     
     if isinstance(stream, str):
         stream = [stream]
-
         
+    if isinstance(freq, str):
+        freq = [freq]        
+
+    if isinstance(variable_id, str):
+        variable_id = [variable_id]        
+    
+    if isinstance(years, str):
+        years = [years]        
+
     component_cdf_kwargs = dict(
         pop=dict(
             coords="minimal",
@@ -79,11 +82,11 @@ def to_dataset_dict(case, component, stream, archive_root=None, cdf_kwargs={}):
     )
                         
     dsets = {}
-    for case_i, component_i, stream_i in zip(case, component, stream):        
-        assets = _get_assets(case_i, component_i, stream_i, archive_root)
-        key = f'{case_i}.{component_i}.{stream_i}'
+    for case_i, component_i, stream_i, freq_i, variable_id_i, years_i in zip(case, component, stream, freq, variable_id, years):
+        assets = _get_assets(case_i, component_i, stream_i, freq_i, variable_id_i, years_i, archive_root)
+        key = f'{case_i}.{component_i}.{stream_i}.{variable_id_i}.{years_i}'
         cdf_kwargs = component_cdf_kwargs[component_i]
         
-        dsets[key] = xr.open_mfdataset(assets[:12], **cdf_kwargs)
+        dsets[key] = xr.open_mfdataset(assets, **cdf_kwargs)
                 
     return dsets
