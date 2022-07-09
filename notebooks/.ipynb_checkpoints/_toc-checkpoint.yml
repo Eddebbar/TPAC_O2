@@ -1,0 +1,18 @@
+format: jb-book
+root: intro
+parts:
+  - caption: Model Validation
+    chapters:
+    - file: directory_links
+    - file: validation/validation_notebook_1
+      sections:
+      - file: validation/validation_notebook_1
+  - caption: Oxygen Budget 
+    chapters:
+    - file: budget/o2_isopycnal
+      sections:
+      - file: budget/cesm_budget
+      - file: budget/mit_budget
+  - caption: References 
+    chapters:
+    - file: references
